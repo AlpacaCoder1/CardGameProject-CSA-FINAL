@@ -23,8 +23,8 @@ public class BlackJack extends Base {
         playGame();
     }
 
-    private ArrayList<Card> dealerHand = null;
-    private ArrayList<Card> playerHand = null;
+    private ArrayList<Card> dealerHand;
+    private ArrayList<Card> playerHand;
 
     private void playGame() {
         dealerHand = playerS.get(0).getHand();

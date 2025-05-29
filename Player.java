@@ -20,7 +20,6 @@ public class Player {
     }
 
     public Player() {
-        // Default constructor (optional)
     }
 
     public String getName() {

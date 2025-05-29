@@ -7,8 +7,9 @@ public class Poker extends Base {
     private int smallBlind = 50;
     private int pot = 0;
     private int turn = 0;
-    private boolean displayCards = false;
     private Scanner input = new Scanner(System.in);
+
+    private ArrayList<Card> communityCards = new ArrayList<>();
 
     public Poker(int p) {
         players = p;
@@ -19,18 +20,65 @@ public class Poker extends Base {
     }
 
     private void playGame() {
-        while (true) {
-            Player currentPlayer = playerS.get(turn);
-            if (currentPlayer.isFolded()) {
-                turn = (turn + 1) % players;
-                continue;
-            }
+        bettingRound();
 
-            System.out.println(currentPlayer.getName() + "'s turn.");
+        dealFlop();
+        System.out.println("Flop: " + communityCards);
+        bettingRound();
+
+        dealTurn();
+        System.out.println("Turn: " + communityCards);
+        bettingRound();
+
+        dealRiver();
+        System.out.println("River: " + communityCards);
+        bettingRound();
+
+        showdown();
+    }
+
+    private void dealFlop() {
+        burnCard();
+
+        for (int i = 0; i < 3; i++) {
+            if (!cards.isEmpty()) {
+                communityCards.add(cards.remove(cards.size() - 1));
+            }
+        }
+    }
+
+    private void dealTurn() {
+        burnCard();
+        if (!cards.isEmpty()) {
+            communityCards.add(cards.remove(cards.size() - 1));
+        }
+    }
+
+    private void dealRiver() {
+        burnCard();
+        if (!cards.isEmpty()) {
+            communityCards.add(cards.remove(cards.size() - 1));
+        }
+    }
+
+    private void burnCard() {
+        if (!cards.isEmpty()) {
+            cards.remove(cards.size() - 1);
+        }
+    }
+
+    private void bettingRound() {
+        System.out.println("Pot is: $" + pot);
+        for (int i = 0; i < players; i++) {
+            Player currentPlayer = playerS.get(i);
+            if (currentPlayer.isFolded()) continue;
+
+            System.out.println("\n" + currentPlayer.getName() + "'s turn.");
             System.out.println("Your hand: " + currentPlayer.getHand());
-            System.out.println("Pot: $" + pot);
+            System.out.println("Community Cards: " + communityCards);
+            System.out.println("Your Money: $" + currentPlayer.getMoney());
             System.out.println("Options: Fold, Bet, Call, Check");
-            String action = input.nextLine().toLowerCase();
+            String action = input.nextLine().trim().toLowerCase();
 
             switch (action) {
                 case "fold":
@@ -40,9 +88,10 @@ public class Poker extends Base {
                 case "bet":
                     System.out.print("Enter bet amount: ");
                     int betAmount = input.nextInt();
-                    input.nextLine();
+                    input.nextLine(); // consume newline
                     if (betAmount > currentPlayer.getMoney()) {
                         System.out.println("Not enough money.");
+                        i--; // retry this player's turn
                     } else {
                         currentPlayer.placeBet(betAmount);
                         pot += betAmount;
@@ -50,10 +99,10 @@ public class Poker extends Base {
                     }
                     break;
                 case "call":
-                    // For simplicity, just add bigBlind amount to pot
-                    int callAmount = bigBlind;
+                    int callAmount = bigBlind; // Simplified call amount
                     if (callAmount > currentPlayer.getMoney()) {
                         System.out.println("Not enough money to call.");
+                        i--; // retry
                     } else {
                         currentPlayer.placeBet(callAmount);
                         pot += callAmount;
@@ -65,37 +114,31 @@ public class Poker extends Base {
                     break;
                 default:
                     System.out.println("Invalid action. Please choose Fold, Bet, Call, or Check.");
-                    continue;
+                    i--; // retry this player's turn
             }
+        }
+    }
 
-            // Simple rotation
-            turn = (turn + 1) % players;
-
-            if (allPlayersFoldedOrOneLeft()) {
-                System.out.println("Round over!");
-                displayWinner();
+    private void showdown() {
+        System.out.println("\nShowdown!");
+        System.out.println("Community Cards: " + communityCards);
+        for (Player p : playerS) {
+            if (!p.isFolded()) {
+                System.out.println(p.getName() + "'s hand: " + p.getHand());
+                // For now, just show hands; you can add hand evaluation here
+            } else {
+                System.out.println(p.getName() + " folded.");
+            }
+        }
+        System.out.print("Please input who won (Player #): ");
+        String winner = input.next();
+        for (Player p : playerS) {
+            if (winner.equalsIgnoreCase(p.getName())) {
+                p.addWinnings(pot);
+                pot = 0;
+                System.out.println(p.getName() + " wins the pot of $" + pot + "!");
                 break;
             }
         }
     }
-
-    private boolean allPlayersFoldedOrOneLeft() {
-        int activePlayers = 0;
-        for (Player p : playerS) {
-            if (!p.isFolded()) activePlayers++;
-        }
-        return activePlayers <= 1;
-    }
-
-    private void displayWinner() {
-        for (Player p : playerS) {
-            if (!p.isFolded()) {
-                System.out.println(p.getName() + " wins the pot of $" + pot + "!");
-                p.addWinnings(pot);
-                pot = 0;
-                return;
-            }
-        }
-        System.out.println("No winner this round.");
-    }
-}
+} 

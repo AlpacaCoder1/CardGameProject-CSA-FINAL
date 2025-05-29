@@ -7,7 +7,7 @@ public class War extends Base {
     private Scanner input = new Scanner(System.in);
 
     public War() {
-        super.dealCards(0, 2, true);
+        dealCards(0, 2, true);
         playGame();
     }
 
@@ -40,7 +40,7 @@ public class War extends Base {
                 turn++;
                 System.out.println("Score: Player 1 - " + p1d + ", Player 2 - " + p2d);
             } else {
-                System.out.println("Game ended early.");
+                System.out.println("You have stopped playing");
                 break;
             }
         }
