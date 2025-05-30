@@ -18,6 +18,9 @@ public class BlackJack extends Base {
             System.out.println("You do not have enough money. Setting bet to $10.");
             bet = 10;
         }
+        if (bet <= 0) {
+            System.out.println("You sneaky little cat, you really thought that you would work, didn't you?. For that, I'm setting the bet to 10");
+        }
 
         playGame();
     }
