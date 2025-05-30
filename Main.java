@@ -4,6 +4,10 @@ public class Main {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         while (true) {
+            String[] greetings = {"Welcome to the Game HUB!", "Hello User, We love to have you here! ;)", "What's Cookin? Good-lookin. Wanna play a Game?", "Hola! ¿Que tal tío? ¿Quieres jugar nuestro videojuego?"};
+            int ind = (int) (Math.random() * 4);
+
+            System.out.println(greetings[ind]);
             System.out.println("\n--- Card Games ---");
             System.out.println("1. Play BlackJack");
             System.out.println("2. Play Poker");
@@ -32,12 +36,18 @@ public class Main {
                 break;
             }
             else if (choice.equalsIgnoreCase("4")) {
-                System.out.println("Exiting the Game. Goodbye");
+                break;
             }
             else {
                 System.out.println("Invalid input. Select 1-4");
             }
         }
-        System.out.println("Thank you for Playing!!!");
+        String[][] farewells = {
+            {"Farewell User, Come Back Next Time!", "Arrivederci amor, Let's play again sometime!!!"},
+            {"Bye-Bye! ;)", "See you later, Alligator!!"}
+        };
+            int row = (int) (Math.random() * 2);
+            int col = (int) (Math.random() * 2);
+            System.out.println(farewells[row][col]);
     }
 }
