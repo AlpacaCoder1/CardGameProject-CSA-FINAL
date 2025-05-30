@@ -125,7 +125,6 @@ public class Poker extends Base {
         for (Player p : playerS) {
             if (!p.isFolded()) {
                 System.out.println(p.getName() + "'s hand: " + p.getHand());
-                // For now, just show hands; you can add hand evaluation here
             } else {
                 System.out.println(p.getName() + " folded.");
             }

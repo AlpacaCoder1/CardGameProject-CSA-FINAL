@@ -17,7 +17,7 @@ public class War extends Base {
         Player p2 = playerS.get(1);
 
         while (turn < 26 && !p1.getHand().isEmpty() && !p2.getHand().isEmpty()) {
-            System.out.println("Play next turn? (Y/N)");
+            System.out.println("Play next turn? Yes or No (Y/N)");
             String answer = input.nextLine();
 
             if (answer.equalsIgnoreCase("Y")) {
@@ -39,9 +39,12 @@ public class War extends Base {
 
                 turn++;
                 System.out.println("Score: Player 1 - " + p1d + ", Player 2 - " + p2d);
-            } else {
+            } else if (answer.equalsIgnoreCase("N")) {
                 System.out.println("You have stopped playing");
                 break;
+            }
+            else {
+                System.out.println("Invalid Input. Please Input Y or N.");
             }
         }
 

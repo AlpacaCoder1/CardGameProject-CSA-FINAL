@@ -8,12 +8,11 @@ public class BlackJack extends Base {
     private Scanner input = new Scanner(System.in);
 
     public BlackJack() {
-        super.dealCards(2, 2, false);  // Dealer and player get 2 cards each
         System.out.println("Welcome to BlackJack!!!");
         System.out.println("You have $" + money);
         System.out.print("How much do you want to bet? (int): ");
         bet = input.nextInt();
-        input.nextLine();  // consume newline
+        input.nextLine();
 
         if (bet > money) {
             System.out.println("You do not have enough money. Setting bet to $10.");
@@ -23,17 +22,19 @@ public class BlackJack extends Base {
         playGame();
     }
 
-    private ArrayList<Card> dealerHand;
-    private ArrayList<Card> playerHand;
+    private ArrayList<Card> dealerHand = null;
+    private ArrayList<Card> playerHand = null;
 
     private void playGame() {
+        dealCards(2, 2, false);
         dealerHand = playerS.get(0).getHand();
         playerHand = playerS.get(1).getHand();
 
         System.out.println("Dealer shows: " + dealerHand.get(0));
         System.out.println("Your cards: " + playerHand);
 
-        while (true) {
+        while (money > 0) {  
+
             System.out.println("Your current score: " + getScore(playerHand));
             System.out.print("Do you want to Hit or Stay (H or S)? ");
             String choice = input.nextLine();
@@ -43,35 +44,58 @@ public class BlackJack extends Base {
                     System.out.println("You busted! Score: " + getScore(playerHand));
                     money -= bet;
                     System.out.println("You lose! Money left: $" + money);
-                    return;
                 }
             } else if (choice.equalsIgnoreCase("S")) {
-                break;
+                while (getScore(dealerHand) < 17) {
+                    hit(dealerHand);
+                }
+                // System.out.println("Dealer's hand: " + dealerHand + "\n" + "Score: " + getScore(dealerHand));
+                System.out.println("Dealer's Score: " + getScore(dealerHand));
+                int playerScore = getScore(playerHand);
+                int dealerScore = getScore(dealerHand);
+        
+                if (dealerScore > 21 || playerScore > dealerScore) {
+                    System.out.println("You Win!");
+                    money += bet;
+                    System.out.println("You have $" + money);
+                    if (money <= 0) {
+                        System.out.println("You have no money. GAME OVER!!!");
+                        break;
+                    } else {
+                        System.out.print("How much do you want to bet? (int): ");
+                        bet = input.nextInt();
+                    }
+                    
+                } else if (playerScore == dealerScore) {
+                    System.out.println("It's a tie!");
+                    System.out.println("You have $" + money);
+                    if (money <= 0) {
+                        System.out.println("You have no money. GAME OVER!!!");
+                        break;
+                    } else {
+                        System.out.print("How much do you want to bet? (int): ");
+                        bet = input.nextInt();
+                    }
+                } else {
+                    System.out.println("Dealer Wins!");
+                    money -= bet;
+                    System.out.println("You have $" + money);
+                    if (money <= 0) {
+                        System.out.println("You have no money. GAME OVER!!!");
+                        break;
+                    } else {
+                        System.out.print("How much do you want to bet? (int): ");
+                        bet = input.nextInt();
+                    }
+                }
+                System.out.println("Your money: $" + money);
+                
+                playGame();
             } else {
                 System.out.println("Invalid input. Please type H or S.");
             }
         }
-
         // Dealer plays: dealer hits on < 17
-        while (getScore(dealerHand) < 17) {
-            hit(dealerHand);
-        }
-        System.out.println("Dealer's hand: " + dealerHand + " Score: " + getScore(dealerHand));
-
-        int playerScore = getScore(playerHand);
-        int dealerScore = getScore(dealerHand);
-
-        if (dealerScore > 21 || playerScore > dealerScore) {
-            System.out.println("You Win!");
-            money += bet;
-        } else if (playerScore == dealerScore) {
-            System.out.println("It's a tie!");
-        } else {
-            System.out.println("Dealer Wins!");
-            money -= bet;
-        }
-
-        System.out.println("Your money: $" + money);
     }
 
     private int getScore(ArrayList<Card> hand) {
