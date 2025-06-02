@@ -7,6 +7,9 @@ public class Poker extends Base {
     private int smallBlind = 50;
     private int pot = 0;
     private int turn = 0;
+    private int bet;
+    private int betAmount;
+    
     private Scanner input = new Scanner(System.in);
 
     private ArrayList<Card> communityCards = new ArrayList<>();
@@ -87,8 +90,15 @@ public class Poker extends Base {
                     break;
                 case "bet":
                     System.out.print("Enter bet amount: ");
-                    int betAmount = input.nextInt();
-                    input.nextLine(); // consume newline
+                    betAmount = input.nextInt();
+                    if (betAmount < bet) {
+                        System.out.println("You have bet lower than the previous bet. If you can't bet, FOLD.");
+                        i--;
+                        currentPlayer.addWinnings(betAmount);
+                    }
+                    else {
+                        bet = betAmount;
+                        input.nextLine();
                     if (betAmount > currentPlayer.getMoney()) {
                         System.out.println("Not enough money.");
                         i--; // retry this player's turn
@@ -98,11 +108,12 @@ public class Poker extends Base {
                         System.out.println(currentPlayer.getName() + " bets $" + betAmount);
                     }
                     break;
+                    }
                 case "call":
-                    int callAmount = bigBlind; // Simplified call amount
+                    int callAmount = betAmount; 
                     if (callAmount > currentPlayer.getMoney()) {
                         System.out.println("Not enough money to call.");
-                        i--; // retry
+                        i--;
                     } else {
                         currentPlayer.placeBet(callAmount);
                         pot += callAmount;

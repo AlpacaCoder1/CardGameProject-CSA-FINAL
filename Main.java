@@ -4,6 +4,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         while (true) {
+            System.out.println("");
             String[] greetings = {"Welcome to the Game HUB!", "Hello User, We love to have you here! ;)", "What's Cookin? Good-lookin. Wanna play a Game?", "Hola! ¿Que tal tío? ¿Quieres jugar nuestro videojuego?"};
             int ind = (int) (Math.random() * 4);
 
