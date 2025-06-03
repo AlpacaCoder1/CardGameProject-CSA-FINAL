@@ -13,7 +13,7 @@ public class BlackJack extends Base {
         System.out.println("Welcome to BlackJack!!!");
         System.out.println("You have $" + money);
 
-        while (money > 0) {
+        while (money > 0 || money < 10000) {
             askForBet();
             startRound();
 
